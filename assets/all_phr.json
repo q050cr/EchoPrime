@@ -606,7 +606,6 @@
             "There is Severe myxomatous change to the Mitral valve leaflets.",
             "There is mild myxomatous change to the mitral leaflets"
         ],
-        "": [],
         "Rheumatic deformity": [
             "There is deformity of the mitral leaflets consistent with rheumatic heart disease.",
             "There is evidence of fusion of the mitral commissures, consistent with rheumatic heart disease.",
@@ -850,7 +849,6 @@
             "There is severe paravalvular aortic regurgitation.",
             "There is trace paravalvular aortic regurgitation."
         ],
-        "": [],
         "Aortic prosthesis gradient": [
             "The aortic prosthesis demonstrates a normal transvalvular gradient for valve type and size.",
             "The aortic prosthesis demonstrates a mildly increased transvalvular gradient for valve type and size. This is suggestive of mild prosthetic aortic stenosis.",

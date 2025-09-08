@@ -9,11 +9,8 @@ import cv2
 import pydicom as dicom
 import torch
 
-with open("assets/per_section.json") as f:
+with open("assets/per_section.json", encoding="utf-8") as f:
     json_data = json.load(f)
-
-with open("assets/all_phr.json") as f:
-    all_phrases = json.load(f)
 
 _ybr_to_rgb_lut = None
 
@@ -46,14 +43,49 @@ ALL_SECTIONS=["Left Ventricle",
              "Pulmonary Veins",
              "Postoperative Findings"]
 
-t_list = {k: [all_phrases[k][j] for j in all_phrases[k]] 
-          for k in all_phrases}
-phrases_per_section_list={k:functools.reduce(lambda a,b: a+b, v) for (k,v) in t_list.items()}
-phrases_per_section_list_org={k:functools.reduce(lambda a,b: a+b, v) for (k,v) in t_list.items()}
+
+# global variables for language-specific data
+all_phrases = None
+t_list = None
+phrases_per_section_list = None
+phrases_per_section_list_org = None
+regex_per_section = None
+
 
 numerical_pattern = r'(\\d+(\\.\\d+)?)'  # Escaped backslashes for integers or floats
 string_pattern = r'\\b\\w+.*?(?=\\.)'
 
+def initialize_language(lang='en'):
+    """
+    Initialize language-specific variables.
+    
+    Args:
+        lang (str): language code
+    """
+    global all_phrases, t_list, phrases_per_section_list, phrases_per_section_list_org, regex_per_section
+    
+    if lang == 'en':
+        phrases_file = "assets/all_phr.json"
+    elif lang == 'it':
+        phrases_file = "assets/all_phr_it.json"
+    #elif lang == 'your_language_code':
+    #    phrases_file = "assets/all_phr_{your_language_code}.json"
+    else:
+        raise ValueError(f"Language not supported: {lang}, see README.md")
+    
+    # load the correct phrases file
+    with open(phrases_file, encoding="utf-8") as f:
+        all_phrases = json.load(f)
+    
+    # now we can create the other global variables
+    t_list = {k: [all_phrases[k][j] for j in all_phrases[k]] 
+              for k in all_phrases}
+    phrases_per_section_list = {k: functools.reduce(lambda a,b: a+b, v) for (k,v) in t_list.items()}
+    phrases_per_section_list_org = {k: functools.reduce(lambda a,b: a+b, v) for (k,v) in t_list.items()}
+
+    regex_per_section = {k: make_it_regex(v)
+                        for (k,v) in phrases_per_section_list.items()}
+    
 def isin(phrase,text):
     return phrase.lower() in (text.lower())
 
@@ -135,8 +167,6 @@ def make_it_regex(sec):
     return regex_sec
 
 
-regex_per_section={k: make_it_regex(v)
-                   for (k,v) in phrases_per_section_list.items()}
 def remove_subsets(strings):
     result=[]
     for string in strings:
