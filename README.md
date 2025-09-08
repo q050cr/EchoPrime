@@ -59,6 +59,8 @@ Users can add their language, the list of supported languages is:
 - English (`en`)
 - Italian (`it`)
 
+To generate the reports in your language just use one of the country codes above when creating the EchoPrime Object `ep = EchoPrime(lang=it)`
+
 Other languages may be added, if you are interested, do the following:
 1) translating the file [all phrases](/assets/all_phr.json) and create a new file - do not translate the section names, only the phrases
 2) Reference the file in `initialize_language()` from [utils.py](/utils/utils.py)
