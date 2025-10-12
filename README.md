@@ -50,3 +50,19 @@ docker run -d --name echoprime-container --gpus all echo-prime tail -f /dev/null
 ```
 Then you can attach to this container and run the notebook located at 
 `/workspace/EchoPrime/EchoPrimeDemo.ipynb`.
+
+### Can I generate the report in my language?
+
+This project has been developed for the English language.
+
+Users can add their language, the list of supported languages is:
+- English (`en`)
+- Italian (`it`)
+
+To generate the reports in your language just use one of the country codes above when creating the EchoPrime Object `ep = EchoPrime(lang="it")`
+
+Other languages may be added, if you are interested, do the following:
+1) translating the file [all phrases](/assets/all_phr.json) and create a new file - do not translate the section names, only the phrases
+2) Reference the file in `initialize_language()` from [utils.py](/utils/utils.py)
+3) Add translation for the sections in `translate_sections()` in [model.py](/echo_prime/model.py)
+4) Share your work creating a pull request

@@ -25,7 +25,18 @@ import transformers
 import utils
 
 class EchoPrime:
-    def __init__(self, device=None):
+    def __init__(self, device=None, lang='en'):
+        """
+        Initialize EchoPrime
+        
+        Args:
+            device: Device PyTorch cpu or cuda, it will automatically use cuda if available
+            lang (str): language ('en' for english, 'it' for italian) - default to english
+        """
+
+        # load language specific files
+        utils.initialize_language(lang)
+        
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         checkpoint = torch.load("model_data/weights/echo_prime_encoder.pt",map_location=device)
         echo_encoder = torchvision.models.video.mvit_v2_s()
@@ -56,6 +67,7 @@ class EchoPrime:
         self.mean = torch.tensor([29.110628, 28.076836, 29.096405]).reshape(3, 1, 1, 1)
         self.std = torch.tensor([47.989223, 46.456997, 47.20083]).reshape(3, 1, 1, 1)
         self.device=device
+        self.lang = lang
 
         # load MIL weights per section
         self.MIL_weights = pd.read_csv("assets/MIL_weights.csv")
@@ -280,6 +292,42 @@ class EchoPrime:
         encoded_study = torch.cat( (stack_of_features ,stack_of_view_encodings),dim=1)
         
         return encoded_study
+    
+    def translate_sections(self, report:str) -> str:
+
+        translations = {}
+
+        if self.lang=='it':
+            translations = {
+            "Left Ventricle": "Ventricolo Sinistro",
+            "Resting Segmental Wall Motion Analysis": "Cinetica Segmentaria a Riposo",
+            "Right Ventricle": "Ventricolo Destro",
+            "Left Atrium": "Atrio Sinistro",
+            "Right Atrium": "Atrio Destro",
+            "Atrial Septum": "Setto Inter-Atriale",
+            "Mitral Valve": "Valvola Mitrale",
+            "Aortic Valve": "Valvola Aortica",
+            "Tricuspid Valve": "Valvola Tricuspide",
+            "Pulmonic Valve": "Valvola Polmonare",
+            "Pericardium": "Pericardio",
+            "Aorta": "Aorta",
+            "IVC": "Vena Cava Inferiore",
+            "Pulmonary Artery": "Arteria Polmonare",
+            "Pulmonary Veins": "Vene Polmonari",
+            "Postoperative Findings": "Esiti Post-Operatori",
+            }
+
+        """
+        elif self.lang=='your_language_code':
+            translations = {
+                # add your translations here
+            }
+        """
+
+        for section, t in translations.items():
+            report = report.replace(section, t)
+        
+        return report
 
     def generate_report(self, study_embedding: torch.Tensor) -> str:
         """
@@ -308,6 +356,9 @@ class EchoPrime:
                 if extracted_section != "Section not found.":
                     generated_report+= extracted_section
                 similarities[max_id]=float('-inf')
+
+        if self.lang!='en':
+            generated_report = self.translate_sections(generated_report)
                 
         return generated_report
     
