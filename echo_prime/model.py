@@ -299,7 +299,8 @@ class EchoPrime:
 
         if self.lang=='it':
             translations = {
-            "Left Ventricle": "Ventricolo Sinistro",
+                                "
+            Left Ventricle": "Ventricolo Sinistro",
             "Resting Segmental Wall Motion Analysis": "Cinetica Segmentaria a Riposo",
             "Right Ventricle": "Ventricolo Destro",
             "Left Atrium": "Atrio Sinistro",
@@ -315,7 +316,27 @@ class EchoPrime:
             "Pulmonary Artery": "Arteria Polmonare",
             "Pulmonary Veins": "Vene Polmonari",
             "Postoperative Findings": "Esiti Post-Operatori",
+            }        elif self.lang=='bs':
+            translations = {
+                "Left Ventricle": "Lijeva komora",
+                "Resting Resting Segmental Wall Motion Analysis stijenke u mirovanju",
+                "Right Ventricle": "Desna komora",
+                "Left Atrium": "Lijeva pretkomora",
+                "Right Atrium": "Desna pretkomora",
+                "Atrial Septum": "Interatrijski septum",
+                "Mitral Valvć": "Mitralni zalistak",
+                "Aortic Valve": "Aortni zalistak",
+                "Tricuspid Valve": "Trikuspidalni zalistak",
+                        "Pulmonic Valve": "Pulmonalni zalistak",
+
+                "Pulmonic Valve": "Pulmonalni zalistak",
+                "Pericardium": "Perikard",
+                "Aorta": "Aorta"Plućna arterija"": "Donja šuplja vena",
+                "Pulmonary Artery": "Plućna arterija",
+                "Pulmonary Veins": "Plućne vene",
+                "Postoperative Findings": "Postoperativni nalazi",
             }
+
 
         """
         elif self.lang=='your_language_code':
