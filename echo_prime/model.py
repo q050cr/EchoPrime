@@ -299,8 +299,7 @@ class EchoPrime:
 
         if self.lang=='it':
             translations = {
-                                "
-            Left Ventricle": "Ventricolo Sinistro",
+            "Left Ventricle": "Ventricolo Sinistro",
             "Resting Segmental Wall Motion Analysis": "Cinetica Segmentaria a Riposo",
             "Right Ventricle": "Ventricolo Destro",
             "Left Atrium": "Atrio Sinistro",
@@ -316,22 +315,22 @@ class EchoPrime:
             "Pulmonary Artery": "Arteria Polmonare",
             "Pulmonary Veins": "Vene Polmonari",
             "Postoperative Findings": "Esiti Post-Operatori",
-            }        elif self.lang=='bs':
+            }
+        elif self.lang=='bs':
             translations = {
                 "Left Ventricle": "Lijeva komora",
-                "Resting Resting Segmental Wall Motion Analysis stijenke u mirovanju",
+                "Resting Segmental Wall Motion Analysis": "Analiza segmentalne pokretljivosti stijenke u mirovanju",
                 "Right Ventricle": "Desna komora",
                 "Left Atrium": "Lijeva pretkomora",
                 "Right Atrium": "Desna pretkomora",
                 "Atrial Septum": "Interatrijski septum",
-                "Mitral Valvć": "Mitralni zalistak",
-                "Aortic Valve": "Aortni zalistak",
-                "Tricuspid Valve": "Trikuspidalni zalistak",
-                        "Pulmonic Valve": "Pulmonalni zalistak",
-
-                "Pulmonic Valve": "Pulmonalni zalistak",
+                "Mitral Valve": "Mitralni zalisak",
+                "Aortic Valve": "Aortni zalisak",
+                "Tricuspid Valve": "Trikuspidalni zalisak",
+                "Pulmonic Valve": "Pulmonalni zalisak",
                 "Pericardium": "Perikard",
-                "Aorta": "Aorta"Plućna arterija"": "Donja šuplja vena",
+                "Aorta": "Aorta",
+                "IVC": "Donja šuplja vena",
                 "Pulmonary Artery": "Plućna arterija",
                 "Pulmonary Veins": "Plućne vene",
                 "Postoperative Findings": "Postoperativni nalazi",

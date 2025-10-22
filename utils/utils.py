@@ -67,15 +67,10 @@ def initialize_language(lang='en'):
         phrases_file = "assets/all_phr.json"
     elif lang == 'it':
         phrases_file = "assets/all_phr_it.json"
-        elif lang == 'bs':
-        # Bosnian (Bosanski)
+    elif lang == 'bs':
         phrases_file = "assets/all_phr_bs.json"
-
     # add your translated file here
     #elif lang == 'your_language_code':
-  #      elif lang == 'bs':
-        # Bosnian (Bosanski)
-# #       phrases_file = "assets/all_phr_bs.json"
     #    phrases_file = "assets/all_phr_{your_language_code}.json"
     else:
         raise ValueError(f"Language not supported: {lang}, see README.md")
