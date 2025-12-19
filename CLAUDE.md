@@ -5,9 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Guidelines
 
 - **Package Manager**: Use `uv` for package management
+- **Running Scripts**: **DO NOT use `uv run`** - use `.venv/bin/python` or `uv run --no-sync` instead (see RTX 5090 Setup below)
 - **Code Style**: Write concise code - avoid unnecessary verbosity
 - **File Creation**: Only create new files when absolutely necessary. Do not create README files unless explicitly requested
-- **Virtual Environment**: Activate `.venv` before running Python scripts: `source .venv/bin/activate`
+- **Virtual Environment**: `.venv` is managed by uv but requires manual PyTorch installation for RTX 5090 support
 
 ## Project Overview
 
@@ -39,6 +40,38 @@ pip install -r requirements.txt
 # Activate virtual environment
 source .venv/bin/activate
 ```
+
+### RTX 5090 GPU Setup
+
+**CRITICAL**: This workspace uses NVIDIA RTX 5090 which requires special PyTorch setup.
+
+```bash
+# Install dependencies
+uv sync
+
+# Install PyTorch nightly for RTX 5090 (sm_120) support
+uv pip install --prerelease=allow --index-url https://download.pytorch.org/whl/nightly/cu128 torch torchvision
+```
+
+**Running scripts:**
+```bash
+# Option 1: Use --no-sync flag (prevents PyTorch downgrade)
+uv run --no-sync scripts/your_script.py <args>
+
+# Option 2: Run directly with venv python
+.venv/bin/python scripts/your_script.py <args>
+
+# NEVER use: uv run (without --no-sync)
+# This will downgrade PyTorch and break RTX 5090 support
+```
+
+**Why this is needed:**
+- RTX 5090 has CUDA compute capability sm_120
+- Stable PyTorch only supports up to sm_90
+- `uv sync` and `uv run` will downgrade to stable PyTorch (breaks GPU)
+- PyTorch nightly (cu128) must be manually maintained
+
+See [RTX_5090_SETUP.md](RTX_5090_SETUP.md) for complete details.
 
 ### Docker Setup
 ```bash
