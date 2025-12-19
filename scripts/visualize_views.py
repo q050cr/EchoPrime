@@ -5,6 +5,7 @@ Visualize view classification results from JSON file.
 Usage:
     python scripts/visualize_views.py results.json
     python scripts/visualize_views.py results.json --output custom_name.png
+    python scripts/visualize_views.py patient_dir/  # Finds all view_classification.json files recursively
 """
 
 import argparse
@@ -88,23 +89,64 @@ def visualize_results(json_path, output_path=None):
     print(f"Saved visualization to {output_path}")
 
 
+def find_all_view_jsons(directory):
+    """Recursively find all view_classification.json files in directory."""
+    return sorted(Path(directory).rglob('view_classification.json'))
+
+
+def generate_output_path(json_path, base_output, total=None):
+    """Generate output path for a given JSON file."""
+    if base_output:
+        base_output = Path(base_output)
+        if total == 1:
+            # Only one JSON found, use the exact output name
+            return base_output
+        else:
+            # Multiple JSONs, append series directory name
+            series_dir = json_path.parent.name
+            stem = base_output.stem
+            suffix = base_output.suffix
+            return base_output.parent / f"{stem}_{series_dir}{suffix}"
+    else:
+        # Default path with series directory name
+        output_dir = Path("figures/vc")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        series_dir = json_path.parent.name
+        return output_dir / f"{series_dir}.png"
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Visualize view classification results')
-    parser.add_argument('json_file', help='JSON file with classification results OR series directory containing view_classification.json')
-    parser.add_argument('--output', '-o', help='Output image path (default: figures/vc/<json_name>.png)')
+    parser.add_argument('json_file', help='JSON file with classification results OR directory (searches recursively for view_classification.json)')
+    parser.add_argument('--output', '-o', help='Output image path (default: figures/vc/<series_name>.png)')
     args = parser.parse_args()
 
-    # If the path is a directory, look for view_classification.json inside it
     input_path = Path(args.json_file)
+
     if input_path.is_dir():
-        json_path = input_path / 'view_classification.json'
-        if not json_path.exists():
-            print(f"Error: view_classification.json not found in {input_path}")
+        # Check if view_classification.json exists in the exact directory first
+        direct_json = input_path / 'view_classification.json'
+        if direct_json.exists():
+            json_paths = [direct_json]
+        else:
+            # Search recursively for all view_classification.json files
+            json_paths = find_all_view_jsons(input_path)
+
+        if not json_paths:
+            print(f"Error: No view_classification.json files found in {input_path}")
             sys.exit(1)
+
+        print(f"Found {len(json_paths)} view_classification.json file(s)")
+
+        # Process each JSON file
+        for idx, json_path in enumerate(json_paths, 1):
+            print(f"\n[{idx}/{len(json_paths)}] Processing {json_path.parent.name}...")
+            output_path = generate_output_path(json_path, args.output, len(json_paths))
+            visualize_results(json_path, output_path)
+
     elif input_path.exists():
-        json_path = input_path
+        # Direct JSON file path
+        visualize_results(input_path, args.output)
     else:
         print(f"Error: {args.json_file} not found")
         sys.exit(1)
-
-    visualize_results(json_path, args.output)
